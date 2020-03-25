@@ -41,7 +41,7 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 	public void buildUI(JPanel panel, ContributionProvider<URGripperProgramNodeContribution> provider) {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
-
+//blaaah bla
 
 		panel.add(createCheckBox("Close to given position"));
 		panel.add(createSpacer(5));
