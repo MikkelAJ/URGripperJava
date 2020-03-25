@@ -12,7 +12,7 @@ import com.ur.urcap.api.contribution.program.swing.SwingProgramNodeService;
 public class Activator implements BundleActivator {
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
-		System.out.println("LightUp registering!");
+		System.out.println("Activator says Hello World!");
 		
 		bundleContext.registerService(SwingProgramNodeService.class, new URGripperProgramNodeService(), null);
 	}
