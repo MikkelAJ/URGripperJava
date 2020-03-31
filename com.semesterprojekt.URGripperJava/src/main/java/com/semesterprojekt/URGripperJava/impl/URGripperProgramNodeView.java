@@ -3,9 +3,13 @@ package com.semesterprojekt.URGripperJava.impl;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -45,10 +49,10 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
 		panel.add(createDescription("Please input IP-adress:"));
-		panel.add(createIPTextField(ipTextField));
+		panel.add(createIPTextField(ipTextField,provider));
 		panel.add(createSpacer(5));
 		panel.add(createDescription("Please input port number:"));
-		panel.add(createPortTextField(portTextField));
+		panel.add(createPortTextField(portTextField, provider));
 		panel.add(createSpacer(5));
 		panel.add(createCheckBox("Close to given position"));
 		panel.add(createSpacer(5));
@@ -63,6 +67,10 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		panel.add(createSpacer(20));
 		panel.add(createCloseButton(closeButton));
 		panel.add(createOpenButton(openButton));
+	}
+	
+	public void setIPTextField(String ip) {
+		ipTextField.setText(ip);
 	}
 	
 	public void setIOComboBoxItems(Integer[] items) {
@@ -100,32 +108,6 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		return box;
 	}
 	
-	private Box createIOComboBox(final JComboBox<Integer> combo,
-			final ContributionProvider<URGripperProgramNodeContribution> provider) {
-		Box box = Box.createHorizontalBox();
-		box.setAlignmentX(Component.LEFT_ALIGNMENT);
-		
-		JLabel label = new JLabel(" digital_out ");
-		
-		combo.setPreferredSize(new Dimension(104, 30));
-		combo.setMaximumSize(combo.getPreferredSize());
-		
-		combo.addItemListener(new ItemListener() {
-			
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				if(e.getStateChange() == ItemEvent.SELECTED) {
-					provider.get().onOutputSelection((Integer) e.getItem());
-				}
-			}
-		});
-		
-		box.add(label);
-		box.add(combo);
-		
-		return box;
-	}
-	
 	private Box createPositionSlider (final JSlider slider, int min, int max,
 			final ContributionProvider<URGripperProgramNodeContribution> provider) { //Currently using Duration Slider provider
 		Box box = Box.createHorizontalBox();
@@ -140,15 +122,15 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		
 		final JLabel value = new JLabel(Integer.toString(slider.getValue())+ " mm");
 		
-		slider.addChangeListener(new ChangeListener() {
-			
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				int newValue = slider.getValue();
-				value.setText(Integer.toString(newValue)+" mm");
-				provider.get().onDurationSelection(newValue);
-			}
-		});
+//		slider.addChangeListener(new ChangeListener() {
+//			
+//			@Override
+//			public void stateChanged(ChangeEvent e) {
+//				int newValue = slider.getValue();
+//				value.setText(Integer.toString(newValue)+" mm");
+//				provider.get().onDurationSelection(newValue);
+//			}
+//		});
 		
 		box.add(slider);
 		box.add(value);
@@ -170,45 +152,15 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		
 		final JLabel value = new JLabel(Integer.toString(slider.getValue())+ " N");
 		
-		slider.addChangeListener(new ChangeListener() {
-			
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				int newValue = slider.getValue();
-				value.setText(Integer.toString(newValue)+" N");
-				provider.get().onDurationSelection(newValue);
-			}
-		});
-		
-		box.add(slider);
-		box.add(value);
-		
-		return box;
-	}
-	
-	private Box createDurationSlider(final JSlider slider, int min, int max,
-			final ContributionProvider<URGripperProgramNodeContribution> provider) {
-		Box box = Box.createHorizontalBox();
-		box.setAlignmentX(Component.LEFT_ALIGNMENT);
-		
-		slider.setMinimum(min);
-		slider.setMaximum(max);
-		slider.setOrientation(JSlider.HORIZONTAL);
-		
-		slider.setPreferredSize(new Dimension(275, 30));
-		slider.setMaximumSize(slider.getPreferredSize());
-		
-		final JLabel value = new JLabel(Integer.toString(slider.getValue())+" s");
-		
-		slider.addChangeListener(new ChangeListener() {
-			
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				int newValue = slider.getValue();
-				value.setText(Integer.toString(newValue)+" s");
-				provider.get().onDurationSelection(newValue);
-			}
-		});
+//		slider.addChangeListener(new ChangeListener() {
+//			
+//			@Override
+//			public void stateChanged(ChangeEvent e) {
+//				int newValue = slider.getValue();
+//				value.setText(Integer.toString(newValue)+" N");
+//				provider.get().onDurationSelection(newValue);
+//			}
+//		});
 		
 		box.add(slider);
 		box.add(value);
@@ -232,26 +184,45 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		return button;
 	}
 	
-	private Box createIPTextField (final JTextField ipTextField)	{
+	private Box createIPTextField (final JTextField ipTextField, final ContributionProvider<URGripperProgramNodeContribution> provider)	{
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
 		
-		final JButton send = new JButton("Set IP");
+		final JButton sendButton = new JButton("Set IP");
 		
+		Action action = new AbstractAction() {
+			public void actionPerformed (ActionEvent e) {
+				provider.get().onIPSelection((String) ipTextField.getText());
+			}
+		};
+		
+		ipTextField.addActionListener(action);
+		sendButton.addActionListener(action);
+			
 		box.add(ipTextField);
-		box.add(send);
+		box.add(sendButton);
 		
 		return box;
-	}
 	
-	private Box createPortTextField (final JTextField portTextField)	{
+ 	}
+	
+	private Box createPortTextField (final JTextField portTextField, final ContributionProvider<URGripperProgramNodeContribution> provider)	{
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
 		
-		final JButton send = new JButton("Set port");
+		final JButton sendButton = new JButton("Set port");
 		
+		Action action = new AbstractAction() {
+			public void actionPerformed (ActionEvent e) {
+				provider.get().onIPSelection((String) portTextField.getText());
+			}
+		};
+		
+		portTextField.addActionListener(action);
+		sendButton.addActionListener(action);
+				
 		box.add(portTextField);
-		box.add(send);
+		box.add(sendButton);
 		
 		return box;
 	}
@@ -259,5 +230,61 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 	private Component createSpacer(int height) {
 		return Box.createRigidArea(new Dimension(0, height));
 	}
+	
+//	private Box createIOComboBox(final JComboBox<Integer> combo,
+//	final ContributionProvider<URGripperProgramNodeContribution> provider) {
+//Box box = Box.createHorizontalBox();
+//box.setAlignmentX(Component.LEFT_ALIGNMENT);
+//
+//JLabel label = new JLabel(" digital_out ");
+//
+//combo.setPreferredSize(new Dimension(104, 30));
+//combo.setMaximumSize(combo.getPreferredSize());
+//
+//combo.addItemListener(new ItemListener() {
+//	
+//	@Override
+//	public void itemStateChanged(ItemEvent e) {
+//		if(e.getStateChange() == ItemEvent.SELECTED) {
+//			provider.get().onOutputSelection((Integer) e.getItem());
+//		}
+//	}
+//});
+//
+//box.add(label);
+//box.add(combo);
+//
+//return box;
+//}
 
+	
+//	private Box createDurationSlider(final JSlider slider, int min, int max,
+//	final ContributionProvider<URGripperProgramNodeContribution> provider) {
+//Box box = Box.createHorizontalBox();
+//box.setAlignmentX(Component.LEFT_ALIGNMENT);
+//
+//slider.setMinimum(min);
+//slider.setMaximum(max);
+//slider.setOrientation(JSlider.HORIZONTAL);
+//
+//slider.setPreferredSize(new Dimension(275, 30));
+//slider.setMaximumSize(slider.getPreferredSize());
+//
+//final JLabel value = new JLabel(Integer.toString(slider.getValue())+" s");
+//
+//slider.addChangeListener(new ChangeListener() {
+//	
+//	@Override
+//	public void stateChanged(ChangeEvent e) {
+//		int newValue = slider.getValue();
+//		value.setText(Integer.toString(newValue)+" s");
+//		provider.get().onDurationSelection(newValue);
+//	}
+//});
+//
+//box.add(slider);
+//box.add(value);
+//
+//return box;
+//}
 }
