@@ -15,6 +15,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -36,13 +37,19 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 	private JSlider forceSlider = new JSlider();
 	private JButton closeButton = new JButton("Close Gripper");
 	private JButton openButton = new JButton("Open Gripper");
+	private JTextField ipTextField = new JTextField();
+	private JTextField portTextField = new JTextField();
 	
 	@Override
 	public void buildUI(JPanel panel, ContributionProvider<URGripperProgramNodeContribution> provider) {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
-//blaaah bla
-
+		panel.add(createDescription("Please input IP-adress:"));
+		panel.add(createIPTextField(ipTextField));
+		panel.add(createSpacer(5));
+		panel.add(createDescription("Please input port number:"));
+		panel.add(createPortTextField(portTextField));
+		panel.add(createSpacer(5));
 		panel.add(createCheckBox("Close to given position"));
 		panel.add(createSpacer(5));
 		panel.add(createCheckBox("Close with given force"));
@@ -223,6 +230,30 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		button.setMaximumSize(button.getPreferredSize());
 		
 		return button;
+	}
+	
+	private Box createIPTextField (final JTextField ipTextField)	{
+		Box box = Box.createHorizontalBox();
+		box.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
+		final JButton send = new JButton("Set IP");
+		
+		box.add(ipTextField);
+		box.add(send);
+		
+		return box;
+	}
+	
+	private Box createPortTextField (final JTextField portTextField)	{
+		Box box = Box.createHorizontalBox();
+		box.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
+		final JButton send = new JButton("Set port");
+		
+		box.add(portTextField);
+		box.add(send);
+		
+		return box;
 	}
 	
 	private Component createSpacer(int height) {

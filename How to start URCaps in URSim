@@ -1,0 +1,29 @@
+Åben en terminal (CTRL + ALT + T)
+
+Først skal der navigeres til den folder hvor Java-programmet ligger. I mit tilfælde er kommandoen således:
+
+cd /Repository/URGripper/com.semesterprojekt.URGripperJava/
+
+Når man er her skriver man
+
+mvn install -P ursim
+
+
+Når dette er kørt færdigt, skal du åbne et nyt terminalvindue (CTRL + ALT + T)
+
+I dette terminalvindue skal du navigere til URsim folderen med den version man vil starte (I vores tilfælde 3.12)
+Det skulle gerne gøres ved denne kommando for alles installation af ursim
+
+cd ursim/ursim-3.12.90886/
+
+Inde i denne folder vil du køre start-ursim.sh filen således:
+
+./start-ursim.sh
+
+Når programmet er startet finder man sit URCaps ved at klikke på
+1. Program Robot
+2. Emptry Program 
+3. Structures
+4. URCaps
+5. Tryk på dit caps
+6. Under Command, kan du nu bruge dit URCaps
