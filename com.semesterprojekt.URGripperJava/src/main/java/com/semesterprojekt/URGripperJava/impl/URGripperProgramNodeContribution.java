@@ -81,8 +81,7 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 
 	@Override
 	public String getTitle() {
-		return "URGripper";
-		//return "LightUp: DO"+getOutput()+" t="+getDuration();
+		return "IP: " + getIP() + " Port: " + getPort();
 	}
 
 	@Override
