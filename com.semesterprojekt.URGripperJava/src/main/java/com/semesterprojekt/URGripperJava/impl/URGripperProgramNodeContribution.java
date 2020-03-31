@@ -14,11 +14,13 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 	private final DataModel model;
 	private final UndoRedoManager undoRedoManager;
 	
-	private static final String OUTPUT_KEY = "output";
-	private static final String DURATION_KEY = "duration";
+	private int i;
 	
-	private static final Integer DEFAULT_OUTPUT = 0;
-	private static final int DEFAULT_DURATION = 1;
+	private static final String IP_KEY = "ip";
+	private static final String PORT_KEY = "port";
+	
+	private static final String DEFAULT_IP = "192.168.3.31";
+	private static final int DEFAULT_PORT = 1234;
 	
 	public URGripperProgramNodeContribution(ProgramAPIProvider apiProvider, URGripperProgramNodeView view,
 			DataModel model) {
@@ -26,50 +28,51 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 		this.view = view;
 		this.model = model;
 		this.undoRedoManager = this.apiProvider.getProgramAPI().getUndoRedoManager();
+		i = 0;
 	}
 	
-	public void onOutputSelection(final Integer output) {
+	public void onIPSelection(final String ip) {
 		undoRedoManager.recordChanges(new UndoableChanges() {
 			
 			@Override
 			public void executeChanges() {
-				model.set(OUTPUT_KEY, output);
+				model.set(IP_KEY, ip);
 			}
 		});
 	}
 	
-	public void onDurationSelection(final int duration) {
+	public void onPortSelection(final int port) {
 		undoRedoManager.recordChanges(new UndoableChanges() {
 			
 			@Override
 			public void executeChanges() {
-				model.set(DURATION_KEY, duration);
+				model.set(PORT_KEY, port);
 			}
 		});
 	}
 	
-	private Integer getOutput() {
-		return model.get(OUTPUT_KEY, DEFAULT_OUTPUT);
+	private String getIP() {
+		return model.get(IP_KEY, DEFAULT_IP);
 	}
 	
-	private int getDuration() {
-		return model.get(DURATION_KEY, DEFAULT_DURATION);
+	private int getPort() {
+		return model.get(PORT_KEY, DEFAULT_PORT);
 	}
 	
-	private Integer[] getOutputItems() {
-		Integer[] items = new Integer[8];
-		for(int i = 0; i<8; i++) {
-			items[i] = i;
-		}
-		return items;
-	}
+//	private Integer[] getOutputItems() {
+//		Integer[] items = new Integer[8];
+//		for(int i = 0; i<8; i++) {
+//			items[i] = i;
+//		}
+//		return items;
+//	}
 	
 	@Override
 	public void openView() {
-		view.setIOComboBoxItems(getOutputItems());
+//		view.setIOComboBoxItems(getOutputItems());
 		
-		view.setIOComboBoxSelection(getOutput());
-		view.setDurationSlider(getDuration());
+//		view.setIP(getIP());
+//		view.setPort(getPort());
 	}
 
 	@Override
@@ -89,9 +92,11 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 
 	@Override
 	public void generateScript(ScriptWriter writer) {
-		writer.appendLine("set_standard_digital_out("+getOutput()+",True)");
-		writer.sleep(getDuration());
-		writer.appendLine("set_standard_digital_out("+getOutput()+",False)");
+		writer.appendLine("socket_open(\"" + getIP() + "\", " + getPort() + ", \"socket_0\")");
+		writer.appendLine("socket_send_string(\"Executed send\")");
+		writer.sleep(1);
+		writer.appendLine("socket_close(\"socket_0\")");
+		writer.sleep(1);
 	}
 
 }
