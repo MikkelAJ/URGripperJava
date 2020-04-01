@@ -91,8 +91,9 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 
 	@Override
 	public void generateScript(ScriptWriter writer) {
+		//Remember this is actual code to be run at runtime of robot execution.
 		writer.appendLine("socket_open(\"" + getIP() + "\", " + getPort() + ", \"socket_0\")");
-		writer.appendLine("socket_send_string(\"Executed send\")");
+		writer.appendLine("socket_send_string(\"Executed send\", \"socket_0\")"); //"execute send" er den string der sendes;
 		writer.sleep(1);
 		writer.appendLine("socket_close(\"socket_0\")");
 		writer.sleep(1);
