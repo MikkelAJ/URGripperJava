@@ -49,7 +49,7 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
 		panel.add(createDescription("Please input IP-adress:"));
-		panel.add(createIPTextField(ipTextField,provider));
+		panel.add(createIPTextField(ipTextField, provider));
 		panel.add(createSpacer(5));
 		panel.add(createDescription("Please input port number:"));
 		panel.add(createPortTextField(portTextField, provider));
@@ -62,15 +62,20 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		panel.add(createSpacer(5));
 		panel.add(createPositionSlider(positionSlider, 0, 10, provider));
 		panel.add(createSpacer(5));
-		panel.add(createDescription("Choose distance between gripper fingers:"));
+		panel.add(createDescription("Choose force between gripper fingers:"));
 		panel.add(createForceSlider(forceSlider, 0 ,10, provider));
 		panel.add(createSpacer(20));
-		panel.add(createCloseButton(closeButton));
-		panel.add(createOpenButton(openButton));
+		panel.add(createCloseButton(closeButton,provider));
+		panel.add(createSpacer(5));
+		panel.add(createOpenButton(openButton, provider));
 	}
 	
 	public void setIPTextField(String ip) {
 		ipTextField.setText(ip);
+	}
+	
+	public void setPortTextField(int Port) {
+		portTextField.setText(Integer.toString(Port));
 	}
 	
 	public void setIOComboBoxItems(Integer[] items) {
@@ -168,18 +173,36 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		return box;
 	}
 	
-	private JButton createCloseButton (final JButton button) {
+	private JButton createCloseButton (final JButton button, final ContributionProvider<URGripperProgramNodeContribution> provider) {
 		
-		button.setPreferredSize(new Dimension(200, 200));
+		button.setPreferredSize(new Dimension(200, 100));
 		button.setMaximumSize(button.getPreferredSize());
+		
+		Action action = new AbstractAction() {
+			public void actionPerformed (ActionEvent e) {
+				provider.get().onCloseSelection(false);
+				button.getModel().setPressed(true);
+			}
+		};
+		
+		button.addActionListener(action);
 		
 		return button;
 	}
 	
-	private JButton createOpenButton (final JButton button) {
+	private JButton createOpenButton (final JButton button, final ContributionProvider<URGripperProgramNodeContribution> provider) {
 		
-		button.setPreferredSize(new Dimension(200, 200));
+		button.setPreferredSize(new Dimension(200, 100));
 		button.setMaximumSize(button.getPreferredSize());
+		
+		Action action = new AbstractAction() {
+			public void actionPerformed (ActionEvent e) {
+				provider.get().onCloseSelection(true);
+				button.getModel().setPressed(true);
+			}
+		};
+		
+		button.addActionListener(action);
 		
 		return button;
 	}
@@ -214,7 +237,7 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		
 		Action action = new AbstractAction() {
 			public void actionPerformed (ActionEvent e) {
-				provider.get().onIPSelection((String) portTextField.getText());
+				provider.get().onPortSelection(Integer.parseInt(portTextField.getText()));
 			}
 		};
 		

@@ -14,13 +14,13 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 	private final DataModel model;
 	private final UndoRedoManager undoRedoManager;
 	
-	private int i;
-	
 	private static final String IP_KEY = "ip";
 	private static final String PORT_KEY = "port";
+	private static final String GRIPSTATUS_KEY = "gripStatus";
 	
 	private static final String DEFAULT_IP = "192.168.3.31";
-	private static final int DEFAULT_PORT = 1234;
+	private static final int DEFAULT_PORT = 12345;
+	private static final boolean DEFAULT_GRIPSTATUS = false;
 	
 	public URGripperProgramNodeContribution(ProgramAPIProvider apiProvider, URGripperProgramNodeView view,
 			DataModel model) {
@@ -28,7 +28,6 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 		this.view = view;
 		this.model = model;
 		this.undoRedoManager = this.apiProvider.getProgramAPI().getUndoRedoManager();
-		i = 0;
 	}
 	
 	public void onIPSelection(final String ip) {
@@ -51,12 +50,27 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 		});
 	}
 	
+	
+	public void onCloseSelection(final boolean gripStatus) {
+		undoRedoManager.recordChanges(new UndoableChanges() {
+			
+			@Override
+			public void executeChanges() {
+				model.set(GRIPSTATUS_KEY, gripStatus);
+			}
+		});
+	}
+	
 	private String getIP() {
 		return model.get(IP_KEY, DEFAULT_IP);
 	}
 	
 	private int getPort() {
 		return model.get(PORT_KEY, DEFAULT_PORT);
+	}
+	
+	private boolean getGripStatus() {
+		return model.get(GRIPSTATUS_KEY, DEFAULT_GRIPSTATUS);
 	}
 	
 //	private Integer[] getOutputItems() {
@@ -71,8 +85,8 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 	public void openView() {
 //		view.setIOComboBoxItems(getOutputItems());
 		
-//		view.setIP(getIP());
-//		view.setPort(getPort());
+		view.setIPTextField(getIP());
+		view.setPortTextField(getPort());
 	}
 
 	@Override
@@ -93,10 +107,8 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 	public void generateScript(ScriptWriter writer) {
 		//Remember this is actual code to be run at runtime of robot execution.
 		writer.appendLine("socket_open(\"" + getIP() + "\", " + getPort() + ", \"socket_0\")");
-		writer.appendLine("socket_send_string(\"Executed send\", \"socket_0\")"); //"execute send" er den string der sendes;
-		writer.sleep(1);
+		writer.appendLine("socket_send_string(\"Executed send " + getGripStatus() + "\", \"socket_0\")"); //"execute send" er den string der sendes;
 		writer.appendLine("socket_close(\"socket_0\")");
-		writer.sleep(1);
 	}
 
 }
