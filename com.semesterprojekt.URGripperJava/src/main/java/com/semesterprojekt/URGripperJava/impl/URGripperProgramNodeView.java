@@ -39,17 +39,17 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 	}
 	
 	private JComboBox<Integer> ioComboBox = new JComboBox<Integer>();
-	private JSlider durationSlider = new JSlider();
+//	private JSlider durationSlider = new JSlider();
 	private JSlider distanceSlider = new JSlider();
 	private JSlider forceSlider = new JSlider();
-	private JButton closeButton = new JButton("Close Gripper");
-	private JButton openButton = new JButton("Open Gripper");
+//	private JButton closeButton = new JButton("Close Gripper");
+//	private JButton openButton = new JButton("Open Gripper");
 	private JTextField ipTextField = new JTextField();
 	private JTextField portTextField = new JTextField();
 	private JCheckBox forceCheckbox = new JCheckBox();
-	JCheckBox DistanceCheckbox = new JCheckBox();
-	JRadioButton openRadioButton = new JRadioButton();
-	JRadioButton closeRadioButton = new JRadioButton();
+	private JCheckBox DistanceCheckbox = new JCheckBox();
+	private JRadioButton openRadioButton = new JRadioButton();
+	private JRadioButton closeRadioButton = new JRadioButton();
 	
 	@Override
 	public void buildUI(JPanel panel, ContributionProvider<URGripperProgramNodeContribution> provider) {
@@ -86,17 +86,29 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		portTextField.setText(Integer.toString(Port));
 	}
 	
-	public void setIOComboBoxItems(Integer[] items) {
-		ioComboBox.removeAllItems();
-		ioComboBox.setModel(new DefaultComboBoxModel<Integer>(items));
-	}
-	
-	public void setIOComboBoxSelection(Integer item) {
-		ioComboBox.setSelectedItem(item);
-	}
+//	public void setIOComboBoxItems(Integer[] items) {
+//		ioComboBox.removeAllItems();
+//		ioComboBox.setModel(new DefaultComboBoxModel<Integer>(items));
+//	}
+//	
+//	public void setIOComboBoxSelection(Integer item) {
+//		ioComboBox.setSelectedItem(item);
+//	}
 	
 	public void setDistanceSlider(int value) {
 		distanceSlider.setValue(value);
+	}
+	
+	public void setForceSlider(int value) {
+		forceSlider.setValue(value);
+	}
+	
+	public void setForceCheckBox(Boolean b) {
+		forceCheckbox.setSelected(b);
+	}
+	
+	public void setDistanceCheckBox(Boolean b) {
+		DistanceCheckbox.setSelected(b);
 	}
 	
 	private Box createDescription(String desc) {
@@ -196,15 +208,15 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		
 		final JLabel value = new JLabel(Integer.toString(slider.getValue())+ " N");
 		
-//		slider.addChangeListener(new ChangeListener() {
-//			
-//			@Override
-//			public void stateChanged(ChangeEvent e) {
-//				int newValue = slider.getValue();
-//				value.setText(Integer.toString(newValue)+" N");
-//				provider.get().onDurationSelection(newValue);
-//			}
-//		});
+		slider.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				int newValue = slider.getValue();
+				value.setText(Integer.toString(newValue)+" N");
+				provider.get().onForceSliderSelection(newValue);
+			}
+		});
 		
 		box.add(slider);
 		box.add(value);

@@ -111,6 +111,17 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 		});
 	}
 	
+	public void onForceSliderSelection(final int force) {
+		undoRedoManager.recordChanges(new UndoableChanges() {
+			
+			@Override
+			public void executeChanges() {
+				model.set(FORCE_VAL_KEY, force);
+				
+			}
+		});
+	}
+	
 	public void onForceSelection(final int force) {
 		undoRedoManager.recordChanges(new UndoableChanges() {
 			
@@ -172,6 +183,10 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 		return model.get(DISTANCE_VAL_KEY, DEFAULT_DISTANCE_VAL);
 	}
 	
+	private int getForceValue() {
+		return model.get(FORCE_VAL_KEY, DEFAULT_FORCE_VAL);
+	}
+	
 	private boolean getForceSelect() {
 		return model.get(FORCE_SELECT_KEY, DEFAULT_SELECT_FORCE);
 	}
@@ -180,31 +195,31 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 		return model.get(DISTANCE_SELECT_KEY, DEFAULT_SELECT_DISTANCE);
 	}
 	
-//	private Integer[] getOutputItems() {
-//		Integer[] items = new Integer[8];
-//		for(int i = 0; i<8; i++) {
-//			items[i] = i;
-//		}
-//		return items;
-//	}
+	
+	
+	
 	
 	public String getSocketCommand() {
-		String cmd = "";
+		String cmd = null;
 		
 		//getting gripper open/close
 		if (getGripStatus() == true) {
-			cmd.concat("OP;");
+			cmd = "OP;";
 		}
 		else {
-			cmd.concat("CL;");
+			cmd = "CL;";
 		}
 		
 		//getting check box close by force and close by distance
-		cmd.concat(getForceSelect() + ";");
-		cmd.concat(getDistanceSelect() + ";");
+		short force = (short) ((getForceSelect()) ? 1:0);
+		short distance = (short) ((getDistanceSelect()) ? 1:0);
+		cmd = cmd.concat(force + ";");
+		cmd = cmd.concat(distance + ";");
 		
 		//getting values from sliders, recalculate to value between 0 and 255
-		cmd.concat(255/20 * getDistanceValue() + ";");
+		cmd = cmd.concat(255/20 * getDistanceValue() + ";");
+		cmd = cmd.concat(255/10 * getForceValue() + ";");
+		cmd = cmd.concat("END")
 		
 		
 		return cmd;
@@ -217,6 +232,9 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 		view.setIPTextField(getIP());
 		view.setPortTextField(getPort());
 		view.setDistanceSlider(getDistanceValue());
+		view.setForceSlider(getForceValue());
+		view.setForceCheckBox(getForceSelect());
+		view.setDistanceCheckBox(getDistanceSelect());
 	}
 
 	@Override
@@ -225,7 +243,8 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 
 	@Override
 	public String getTitle() {
-		return "O/C: " + getGripStatus() + " IP: " + getIP() + " Port: " + getPort() + " Force: " + getForceSelect() + " Distance: " + getDistanceSelect();
+//		return "O/C: " + getGripStatus() + " IP: " + getIP() + " Port: " + getPort() + " Force: \n" + getForceSelect() + " Distance: " + getDistanceSelect();
+		return getSocketCommand();
 	}
 
 	@Override
@@ -237,7 +256,9 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 	public void generateScript(ScriptWriter writer) {
 		//Remember this is actual code to be run at runtime of robot execution.
 		writer.appendLine("socket_open(\"" + getIP() + "\", " + getPort() + ", \"socket_0\")");
-		writer.appendLine("socket_send_string(\"Executed send " + getGripStatus() + "\", \"socket_0\")"); //"execute send" er den string der sendes;
+		writer.appendLine("socket_send_string(\"" + getSocketCommand() + "\", \"socket_0\")"); //"execute send" er den string der sendes;
+		writer.whileNot("socket_read_string(\"socket_0\") == \"OK\"");
+		writer.end();
 		writer.appendLine("socket_close(\"socket_0\")");
 	}
 
