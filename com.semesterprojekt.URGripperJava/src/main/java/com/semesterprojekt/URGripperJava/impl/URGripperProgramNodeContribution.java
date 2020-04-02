@@ -195,7 +195,7 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 
 	@Override
 	public String getTitle() {
-		return "IP: " + getIP() + " Port: " + getPort() + " Force: " + getForceSelect() + " Distance: " + getDistanceSelect();
+		return "O/C: " + getGripStatus() + " IP: " + getIP() + " Port: " + getPort() + " Force: " + getForceSelect() + " Distance: " + getDistanceSelect();
 	}
 
 	@Override

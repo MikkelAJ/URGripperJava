@@ -13,12 +13,14 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -46,6 +48,8 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 	private JTextField portTextField = new JTextField();
 	JCheckBox forceCheckbox = new JCheckBox();
 	JCheckBox DistanceCheckbox = new JCheckBox();
+	JRadioButton openRadioButton = new JRadioButton();
+	JRadioButton closeRadioButton = new JRadioButton();
 	
 	@Override
 	public void buildUI(JPanel panel, ContributionProvider<URGripperProgramNodeContribution> provider) {
@@ -60,8 +64,6 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		panel.add(createDistanceBox(DistanceCheckbox, provider));
 		panel.add(createSpacer(5));
 		panel.add(createForceBox(forceCheckbox, provider));
-		panel.add(createSpacer(5));
-//		panel.add(createCheckBox("Close with given force"));
 		panel.add(createSpacer(20));
 		panel.add(createDescription("Choose distance between gripper fingers:"));
 		panel.add(createSpacer(5));
@@ -70,9 +72,10 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		panel.add(createDescription("Choose force between gripper fingers:"));
 		panel.add(createForceSlider(forceSlider, 0 ,10, provider));
 		panel.add(createSpacer(20));
-		panel.add(createCloseButton(closeButton,provider));
-		panel.add(createSpacer(5));
-		panel.add(createOpenButton(openButton, provider));
+		panel.add(createOpenCloseRadioButton(openRadioButton,closeRadioButton, provider));
+//		panel.add(createCloseButton(closeButton,provider));
+//		panel.add(createSpacer(5));
+//		panel.add(createOpenButton(openButton, provider));
 	}
 	
 	public void setIPTextField(String ip) {
@@ -208,39 +211,42 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		
 		return box;
 	}
-	
-	private JButton createCloseButton (final JButton button, final ContributionProvider<URGripperProgramNodeContribution> provider) {
+
+	private Box createOpenCloseRadioButton ( final JRadioButton openRadioButton, final JRadioButton closeRadioButton, 
+			final ContributionProvider<URGripperProgramNodeContribution> provider) {
+		Box box = Box.createHorizontalBox();
+		box.setAlignmentX(Component.LEFT_ALIGNMENT);
 		
-		button.setPreferredSize(new Dimension(200, 100));
-		button.setMaximumSize(button.getPreferredSize());
+		JLabel label = new JLabel("Choose to open or close the gripper: ");
 		
-		Action action = new AbstractAction() {
-			public void actionPerformed (ActionEvent e) {
-				provider.get().onCloseSelection(false);
-				button.getModel().setPressed(true);
+		openRadioButton.setText("Open");
+		closeRadioButton.setText("Close");
+		
+		ButtonGroup buttonGroup = new ButtonGroup();
+		buttonGroup.add(openRadioButton);
+		buttonGroup.add(closeRadioButton);
+		
+		openRadioButton.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				provider.get().onCloseSelection((boolean) openRadioButton.isSelected());
 			}
-		};
+		});
 		
-		button.addActionListener(action);
-		
-		return button;
-	}
-	
-	private JButton createOpenButton (final JButton button, final ContributionProvider<URGripperProgramNodeContribution> provider) {
-		
-		button.setPreferredSize(new Dimension(200, 100));
-		button.setMaximumSize(button.getPreferredSize());
-		
-		Action action = new AbstractAction() {
-			public void actionPerformed (ActionEvent e) {
-				provider.get().onCloseSelection(true);
-				button.getModel().setPressed(true);
+		closeRadioButton.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				provider.get().onCloseSelection((boolean) openRadioButton.isSelected());
 			}
-		};
+		});
+
 		
-		button.addActionListener(action);
+		box.add(label);
+		box.add(openRadioButton);
+		box.add(closeRadioButton);
 		
-		return button;
+		
+		return box;
 	}
 	
 	private Box createIPTextField (final JTextField ipTextField, final ContributionProvider<URGripperProgramNodeContribution> provider)	{
@@ -260,6 +266,7 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 			
 		box.add(ipTextField);
 		box.add(sendButton);
+		box.setMaximumSize(new Dimension(500,20));
 		
 		return box;
 	
@@ -282,6 +289,7 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 				
 		box.add(portTextField);
 		box.add(sendButton);
+		box.setMaximumSize(new Dimension(500,20));
 		
 		return box;
 	}
@@ -346,4 +354,38 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 //
 //return box;
 //}
+//	private JButton createCloseButton (final JButton button, final ContributionProvider<URGripperProgramNodeContribution> provider) {
+//	
+//	button.setPreferredSize(new Dimension(200, 100));
+//	button.setMaximumSize(button.getPreferredSize());
+//	
+//	Action action = new AbstractAction() {
+//		public void actionPerformed (ActionEvent e) {
+//			provider.get().onCloseSelection(false);
+//			button.getModel().setPressed(true);
+//		}
+//	};
+//	
+//	button.addActionListener(action);
+//	
+//	return button;
+//}
+//
+//private JButton createOpenButton (final JButton button, final ContributionProvider<URGripperProgramNodeContribution> provider) {
+//	
+//	button.setPreferredSize(new Dimension(200, 100));
+//	button.setMaximumSize(button.getPreferredSize());
+//	
+//	Action action = new AbstractAction() {
+//		public void actionPerformed (ActionEvent e) {
+//			provider.get().onCloseSelection(true);
+//			button.getModel().setPressed(true);
+//		}
+//	};
+//	
+//	button.addActionListener(action);
+//	
+//	return button;
+//}
+//
 }
