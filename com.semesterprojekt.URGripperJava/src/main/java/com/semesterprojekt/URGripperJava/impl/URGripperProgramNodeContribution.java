@@ -7,6 +7,14 @@ import com.ur.urcap.api.domain.script.ScriptWriter;
 import com.ur.urcap.api.domain.undoredo.UndoRedoManager;
 import com.ur.urcap.api.domain.undoredo.UndoableChanges;
 
+/**
+ * @author ur
+ *
+ */
+/**
+ * @author ur
+ *
+ */
 public class URGripperProgramNodeContribution implements ProgramNodeContribution{
 
 	private final ProgramAPIProvider apiProvider;
@@ -152,6 +160,10 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 		return model.get(FORCE_SELECT_KEY, DEFAULT_SELECT_FORCE);
 	}
 	
+	private boolean getDistanceSelect() {
+		return model.get(DISTANCE_SELECT_KEY, DEFAULT_SELECT_DISTANCE);
+	}
+	
 //	private Integer[] getOutputItems() {
 //		Integer[] items = new Integer[8];
 //		for(int i = 0; i<8; i++) {
@@ -159,6 +171,28 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 //		}
 //		return items;
 //	}
+	
+	public String getSocketCommand() {
+		String cmd = "";
+		
+		//getting gripper open/close
+		if (getGripStatus() == true) {
+			cmd.concat("OP;");
+		}
+		else {
+			cmd.concat("CL;");
+		}
+		
+		//getting check box close by force and close by distance
+		cmd.concat(getForceSelect() + ";");
+		cmd.concat(getDistanceSelect() + ";");
+		
+		//getting values from sliders, recalculate to value between 0 and 255
+		cmd.concat(255/20 * getDistanceValue() + ";");
+		
+		
+		return cmd;
+	}
 	
 	@Override
 	public void openView() {

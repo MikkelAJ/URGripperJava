@@ -44,7 +44,7 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 	private JButton openButton = new JButton("Open Gripper");
 	private JTextField ipTextField = new JTextField();
 	private JTextField portTextField = new JTextField();
-	JCheckBox forceCheckbox = new JCheckBox();
+	private JCheckBox forceCheckbox = new JCheckBox();
 	
 	@Override
 	public void buildUI(JPanel panel, ContributionProvider<URGripperProgramNodeContribution> provider) {
