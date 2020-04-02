@@ -3,6 +3,7 @@ package com.semesterprojekt.URGripperJava.impl;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.ItemSelectable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -43,6 +44,7 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 	private JButton openButton = new JButton("Open Gripper");
 	private JTextField ipTextField = new JTextField();
 	private JTextField portTextField = new JTextField();
+	JCheckBox forceCheckbox = new JCheckBox();
 	
 	@Override
 	public void buildUI(JPanel panel, ContributionProvider<URGripperProgramNodeContribution> provider) {
@@ -54,13 +56,13 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		panel.add(createDescription("Please input port number:"));
 		panel.add(createPortTextField(portTextField, provider));
 		panel.add(createSpacer(5));
-		panel.add(createCheckBox("Close to given position"));
+		panel.add(createForceBox(forceCheckbox, provider));
 		panel.add(createSpacer(5));
-		panel.add(createCheckBox("Close with given force"));
+//		panel.add(createCheckBox("Close with given force"));
 		panel.add(createSpacer(20));
 		panel.add(createDescription("Choose distance between gripper fingers:"));
 		panel.add(createSpacer(5));
-		panel.add(createPositionSlider(positionSlider, 0, 10, provider));
+		panel.add(createPositionSlider(positionSlider, 0, 20, provider));
 		panel.add(createSpacer(5));
 		panel.add(createDescription("Choose force between gripper fingers:"));
 		panel.add(createForceSlider(forceSlider, 0 ,10, provider));
@@ -87,8 +89,8 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		ioComboBox.setSelectedItem(item);
 	}
 	
-	public void setDurationSlider(int value) {
-		durationSlider.setValue(value);
+	public void setPositionSlider(int value) {
+		positionSlider.setValue(value);
 	}
 	
 	private Box createDescription(String desc) {
@@ -102,13 +104,23 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		return box;
 	}
 	
-	private Box createCheckBox(String desc) {
+	private Box createForceBox(final JCheckBox forceBox, final ContributionProvider<URGripperProgramNodeContribution> provider) {
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
 		
-		JCheckBox checkbox = new JCheckBox(desc);
+		final JLabel description = new JLabel("Close by force");
 		
-		box.add(checkbox);
+		forceBox.addItemListener(new ItemListener() {
+			
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				provider.get().onForceSelection(e.getStateChange());
+				
+			}
+		});
+		
+		box.add(forceBox);
+		box.add(description);
 		
 		return box;
 	}
@@ -127,15 +139,15 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		
 		final JLabel value = new JLabel(Integer.toString(slider.getValue())+ " mm");
 		
-//		slider.addChangeListener(new ChangeListener() {
-//			
-//			@Override
-//			public void stateChanged(ChangeEvent e) {
-//				int newValue = slider.getValue();
-//				value.setText(Integer.toString(newValue)+" mm");
-//				provider.get().onDurationSelection(newValue);
-//			}
-//		});
+		slider.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				int newValue = slider.getValue();
+				value.setText(Integer.toString(newValue)+" mm");
+				provider.get().onPositionSliderSelection(newValue);
+			}
+		});
 		
 		box.add(slider);
 		box.add(value);
