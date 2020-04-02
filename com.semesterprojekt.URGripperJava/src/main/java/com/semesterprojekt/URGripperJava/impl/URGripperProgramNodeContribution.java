@@ -92,12 +92,12 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 	 * Setting the wanted distance between gripperfingers when opening or closing the gripper, by the value given as parameter
 	 * @param position type integer, 0 minimum distance, 255 maximum distance, representing minimum and maximum distance between gripper fingers
 	 */
-	public void onPositionSliderSelection(final int position) {
+	public void onDistanceSliderSelection(final int distance) {
 		undoRedoManager.recordChanges(new UndoableChanges() {
 			
 			@Override
 			public void executeChanges() {
-				model.set(DISTANCE_VAL_KEY, position);
+				model.set(DISTANCE_VAL_KEY, distance);
 				
 			}
 		});
@@ -113,6 +113,22 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 				}
 				else if (force ==2) {
 					model.set(FORCE_SELECT_KEY, false);
+				}
+				
+			}
+		});
+	}
+	
+	public void onDistanceSelection(final int distance) {
+		undoRedoManager.recordChanges(new UndoableChanges() {
+			
+			@Override
+			public void executeChanges() {
+				if(distance == 1) {
+					model.set(DISTANCE_SELECT_KEY, true);
+				}
+				else if (distance ==2) {
+					model.set(DISTANCE_SELECT_KEY, false);
 				}
 				
 			}
@@ -152,6 +168,10 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 		return model.get(FORCE_SELECT_KEY, DEFAULT_SELECT_FORCE);
 	}
 	
+	private boolean getDistanceSelect() {
+		return model.get(DISTANCE_SELECT_KEY, DEFAULT_SELECT_DISTANCE);
+	}
+	
 //	private Integer[] getOutputItems() {
 //		Integer[] items = new Integer[8];
 //		for(int i = 0; i<8; i++) {
@@ -166,7 +186,7 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 		
 		view.setIPTextField(getIP());
 		view.setPortTextField(getPort());
-		view.setPositionSlider(getDistanceValue());
+		view.setDistanceSlider(getDistanceValue());
 	}
 
 	@Override
@@ -175,7 +195,7 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 
 	@Override
 	public String getTitle() {
-		return "IP: " + getIP() + " Port: " + getPort() + " Force: " + getForceSelect();
+		return "IP: " + getIP() + " Port: " + getPort() + " Force: " + getForceSelect() + " Distance: " + getDistanceSelect();
 	}
 
 	@Override
