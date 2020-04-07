@@ -219,7 +219,7 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 		//getting values from sliders, recalculate to value between 0 and 255
 		cmd = cmd.concat(255/20 * getDistanceValue() + ";");
 		cmd = cmd.concat(255/10 * getForceValue() + ";");
-		cmd = cmd.concat("END")
+		cmd = cmd.concat("END");
 		
 		
 		return cmd;
