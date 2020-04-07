@@ -14,7 +14,7 @@ Når dette er kørt færdigt, skal du åbne et nyt terminalvindue (CTRL + ALT + 
 I dette terminalvindue skal du navigere til URsim folderen med den version man vil starte (I vores tilfælde 3.12)
 Det skulle gerne gøres ved denne kommando for alles installation af ursim
 
-cd ursim/ursim-3.12.90886/
+cd ursim/ursim-3.12.0.90886/
 
 Inde i denne folder vil du køre start-ursim.sh filen således:
 
