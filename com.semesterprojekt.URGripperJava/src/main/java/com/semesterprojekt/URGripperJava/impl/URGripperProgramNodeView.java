@@ -67,7 +67,7 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		panel.add(createSpacer(20));
 		panel.add(createDescription("Choose distance between gripper fingers:"));
 		panel.add(createSpacer(5));
-		panel.add(createDistanceSlider(distanceSlider, 0, 20, provider));
+		panel.add(createDistanceSlider(distanceSlider, 0, 65, provider));
 		panel.add(createSpacer(5));
 		panel.add(createDescription("Choose force between gripper fingers:"));
 		panel.add(createForceSlider(forceSlider, 0 ,10, provider));
@@ -111,6 +111,16 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		DistanceCheckbox.setSelected(b);
 	}
 	
+	public void setGripperStatus (Boolean b) {
+		openRadioButton.setSelected(b);
+		closeRadioButton.setSelected(!b);
+	}
+	
+	
+	/**
+	 * Creates an area with text for description of other components
+	 * @param desc type String, the text you want displayed
+	 */
 	private Box createDescription(String desc) {
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -122,6 +132,11 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		return box;
 	}
 	
+	/**
+	 * Creates an area with a checkbox and a label text for the checkbox
+	 * @param forceBox type JCheckBox, an instantiated JChckBox
+	 * @param provider ______ (Hvordan virker provider helt præcist?)
+	 */
 	private Box createForceBox(final JCheckBox forceBox, final ContributionProvider<URGripperProgramNodeContribution> provider) {
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -142,12 +157,16 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		
 		return box;
 	}
-	
+	/**
+	 * Creates an area with a checkbox and a label text for the checkbox
+	 * @param distanceBox type JCheckBox, an instantiated JChckBox
+	 * @param provider ______ (Hvordan virker provider helt præcist?)
+	 */
 	private Box createDistanceBox(final JCheckBox distanceBox, final ContributionProvider<URGripperProgramNodeContribution> provider) {
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
 		
-		final JLabel description = new JLabel("Close to position");
+		final JLabel description = new JLabel("Close to given distance");
 		
 		distanceBox.addItemListener(new ItemListener() {
 			
@@ -164,6 +183,13 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		return box;
 	}
 	
+	/**
+	 * Creates an area with a slider for choosing distance between gripper fingers and a label for unit
+	 * @param slider type JSlider, an instantiated JSlider
+	 * @param min type int, minimum value of slider
+	 * @param max type int, maximum value of slider
+	 * @param provider ______ (Hvordan virker provider helt præcist?)
+	 */
 	private Box createDistanceSlider (final JSlider slider, int min, int max,
 			final ContributionProvider<URGripperProgramNodeContribution> provider) { //Currently using Duration Slider provider
 		Box box = Box.createHorizontalBox();
@@ -194,6 +220,13 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		return box;
 	}
 	
+	/**
+	 * Creates an area with a slider for choosing force ofn gripper fingers and a label for unit
+	 * @param slider type JSlider, an instantiated JSlider
+	 * @param min type int, minimum value of slider
+	 * @param max type int, maximum value of slider
+	 * @param provider ______ (Hvordan virker provider helt præcist?)
+	 */
 	private Box createForceSlider (final JSlider slider, int min, int max,
 			final ContributionProvider<URGripperProgramNodeContribution> provider) { //Currently using Duration Slider provider
 		Box box = Box.createHorizontalBox();
@@ -224,6 +257,12 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		return box;
 	}
 
+	/**
+	 * Creates an area with two radiobuttons for opening and closing gripper and a label text for description
+	 * @param openRadioButton type JRadioButton, an instantiated button for opening gripper
+	 * @param closeRadioButton type JRadioButton, an instantiated button for closing gripper
+	 * @param provider ______ (Hvordan virker provider helt præcist?)
+	 */
 	private Box createOpenCloseRadioButton ( final JRadioButton openRadioButton, final JRadioButton closeRadioButton, 
 			final ContributionProvider<URGripperProgramNodeContribution> provider) {
 		Box box = Box.createHorizontalBox();
@@ -261,6 +300,11 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		return box;
 	}
 	
+	/**
+	 * Creates an area with a textfield to write IP in and a button to set the IP
+	 * @param ipTextField type JTextField, textfield for IP input
+	 * @param provider ______ (Hvordan virker provider helt præcist?)
+	 */
 	private Box createIPTextField (final JTextField ipTextField, final ContributionProvider<URGripperProgramNodeContribution> provider)	{
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -284,6 +328,11 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 	
  	}
 	
+	/**
+	 * Creates an area with a textfield to write port in and a button to set the port
+	 * @param portTextField type JTextField, textfield for IP input
+	 * @param provider ______ (Hvordan virker provider helt præcist?)
+	 */
 	private Box createPortTextField (final JTextField portTextField, final ContributionProvider<URGripperProgramNodeContribution> provider)	{
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -306,6 +355,10 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		return box;
 	}
 	
+	/**
+	 * Creates an empty area for spacing with given height
+	 * @param heright type int, height of the spacer
+	 */
 	private Component createSpacer(int height) {
 		return Box.createRigidArea(new Dimension(0, height));
 	}

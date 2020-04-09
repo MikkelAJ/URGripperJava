@@ -7,14 +7,6 @@ import com.ur.urcap.api.domain.script.ScriptWriter;
 import com.ur.urcap.api.domain.undoredo.UndoRedoManager;
 import com.ur.urcap.api.domain.undoredo.UndoableChanges;
 
-/**
- * @author ur
- *
- */
-/**
- * @author ur
- *
- */
 public class URGripperProgramNodeContribution implements ProgramNodeContribution{
 
 	private final ProgramAPIProvider apiProvider;
@@ -43,8 +35,9 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 	private static final short DEFAULT_DISTANCE_VAL = 5;
 	private static final short DEFAULT_FORCE_VAL = 5;
 	
+	
 	/**
-	 * Contructor for the Gripper object in URCaps
+	 * Constructor for the Gripper object in URCaps
 	 * @param apiProvider API provider from Polyscope
 	 * @param view view type object 
 	 * @param model datatype to contain the URCaps data
@@ -160,7 +153,7 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 				if(distance == 1) {
 					model.set(DISTANCE_SELECT_KEY, true);
 				}
-				else if (distance ==2) {
+				else if (distance == 2) {
 					model.set(DISTANCE_SELECT_KEY, false);
 				}
 				
@@ -252,6 +245,7 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 		view.setForceSlider(getForceValue());
 		view.setForceCheckBox(getForceSelect());
 		view.setDistanceCheckBox(getDistanceSelect());
+		view.setGripperStatus(getGripStatus());
 	}
 
 	@Override
@@ -260,8 +254,8 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 
 	@Override
 	public String getTitle() {
-//		return "O/C: " + getGripStatus() + " IP: " + getIP() + " Port: " + getPort() + " Force: \n" + getForceSelect() + " Distance: " + getDistanceSelect();
-//		return getSocketCommand();
+		//return "O/C: " + getGripStatus() + " IP: " + getIP() + " Port: " + getPort() + " Force: \n" + getForceSelect() + " Distance: " + getDistanceSelect();
+		//return getSocketCommand();
 		return "Force/Distance Gripper";
 	}
 
