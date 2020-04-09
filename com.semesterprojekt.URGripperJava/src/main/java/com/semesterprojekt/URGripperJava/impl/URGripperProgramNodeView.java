@@ -38,14 +38,10 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		this.apiProvider = apiProvider;
 	}
 	
-	private JComboBox<Integer> ioComboBox = new JComboBox<Integer>();
-//	private JSlider durationSlider = new JSlider();
-	private JSlider distanceSlider = new JSlider();
-	private JSlider forceSlider = new JSlider();
-//	private JButton closeButton = new JButton("Close Gripper");
-//	private JButton openButton = new JButton("Open Gripper");
 	private JTextField ipTextField = new JTextField();
 	private JTextField portTextField = new JTextField();
+	private JSlider distanceSlider = new JSlider();
+	private JSlider forceSlider = new JSlider();
 	private JCheckBox forceCheckbox = new JCheckBox();
 	private JCheckBox DistanceCheckbox = new JCheckBox();
 	private JRadioButton openRadioButton = new JRadioButton();
@@ -73,9 +69,6 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		panel.add(createForceSlider(forceSlider, 0 ,10, provider));
 		panel.add(createSpacer(20));
 		panel.add(createOpenCloseRadioButton(openRadioButton,closeRadioButton, provider));
-//		panel.add(createCloseButton(closeButton,provider));
-//		panel.add(createSpacer(5));
-//		panel.add(createOpenButton(openButton, provider));
 	}
 	
 	public void setIPTextField(String ip) {
@@ -86,14 +79,13 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		portTextField.setText(Integer.toString(Port));
 	}
 	
-//	public void setIOComboBoxItems(Integer[] items) {
-//		ioComboBox.removeAllItems();
-//		ioComboBox.setModel(new DefaultComboBoxModel<Integer>(items));
-//	}
-//	
-//	public void setIOComboBoxSelection(Integer item) {
-//		ioComboBox.setSelectedItem(item);
-//	}
+	public void setForceCheckBox(Boolean b) {
+		forceCheckbox.setSelected(b);
+	}
+	
+	public void setDistanceCheckBox(Boolean b) {
+		DistanceCheckbox.setSelected(b);
+	}
 	
 	public void setDistanceSlider(int value) {
 		distanceSlider.setValue(value);
@@ -103,31 +95,62 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		forceSlider.setValue(value);
 	}
 	
-	public void setForceCheckBox(Boolean b) {
-		forceCheckbox.setSelected(b);
-	}
-	
-	public void setDistanceCheckBox(Boolean b) {
-		DistanceCheckbox.setSelected(b);
-	}
-	
 	public void setGripperStatus (Boolean b) {
 		openRadioButton.setSelected(b);
 		closeRadioButton.setSelected(!b);
 	}
 	
-	
 	/**
-	 * Creates an area with text for description of other components
-	 * @param desc type String, the text you want displayed
+	 * Creates an area with a textfield to write IP in and a button to set the IP
+	 * @param ipTextField type JTextField, textfield for IP input
+	 * @param provider couples the View with the Contribution class
 	 */
-	private Box createDescription(String desc) {
+	private Box createIPTextField (final JTextField ipTextField, final ContributionProvider<URGripperProgramNodeContribution> provider)	{
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
 		
-		JLabel label = new JLabel(desc);
+		final JButton sendButton = new JButton("Set IP");
 		
-		box.add(label);
+		Action action = new AbstractAction() {
+			public void actionPerformed (ActionEvent e) {
+				provider.get().onIPSelection((String) ipTextField.getText());
+			}
+		};
+		
+		ipTextField.addActionListener(action);
+		sendButton.addActionListener(action);
+			
+		box.add(ipTextField);
+		box.add(sendButton);
+		box.setMaximumSize(new Dimension(500,20));
+		
+		return box;
+	
+ 	}
+	
+	/**
+	 * Creates an area with a textfield to write port in and a button to set the port
+	 * @param portTextField type JTextField, textfield for IP input
+	 * @param provider couples the View with the Contribution class
+	 */
+	private Box createPortTextField (final JTextField portTextField, final ContributionProvider<URGripperProgramNodeContribution> provider)	{
+		Box box = Box.createHorizontalBox();
+		box.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
+		final JButton sendButton = new JButton("Set port");
+		
+		Action action = new AbstractAction() {
+			public void actionPerformed (ActionEvent e) {
+				provider.get().onPortSelection(Integer.parseInt(portTextField.getText()));
+			}
+		};
+		
+		portTextField.addActionListener(action);
+		sendButton.addActionListener(action);
+				
+		box.add(portTextField);
+		box.add(sendButton);
+		box.setMaximumSize(new Dimension(500,20));
 		
 		return box;
 	}
@@ -135,7 +158,7 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 	/**
 	 * Creates an area with a checkbox and a label text for the checkbox
 	 * @param forceBox type JCheckBox, an instantiated JChckBox
-	 * @param provider ______ (Hvordan virker provider helt præcist?)
+	 * @param provider couples the View with the Contribution class
 	 */
 	private Box createForceBox(final JCheckBox forceBox, final ContributionProvider<URGripperProgramNodeContribution> provider) {
 		Box box = Box.createHorizontalBox();
@@ -157,11 +180,12 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		
 		return box;
 	}
+
 	/**
 	 * Creates an area with a checkbox and a label text for the checkbox
 	 * @param distanceBox type JCheckBox, an instantiated JChckBox
-	 * @param provider ______ (Hvordan virker provider helt præcist?)
-	 */
+	 * @param provider couples the View with the Contribution class
+	 * */
 	private Box createDistanceBox(final JCheckBox distanceBox, final ContributionProvider<URGripperProgramNodeContribution> provider) {
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -188,7 +212,7 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 	 * @param slider type JSlider, an instantiated JSlider
 	 * @param min type int, minimum value of slider
 	 * @param max type int, maximum value of slider
-	 * @param provider ______ (Hvordan virker provider helt præcist?)
+	 * @param provider couples the View with the Contribution class
 	 */
 	private Box createDistanceSlider (final JSlider slider, int min, int max,
 			final ContributionProvider<URGripperProgramNodeContribution> provider) { //Currently using Duration Slider provider
@@ -221,11 +245,11 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 	}
 	
 	/**
-	 * Creates an area with a slider for choosing force ofn gripper fingers and a label for unit
+	 * Creates an area with a slider for choosing force of gripper fingers and a label for unit
 	 * @param slider type JSlider, an instantiated JSlider
 	 * @param min type int, minimum value of slider
 	 * @param max type int, maximum value of slider
-	 * @param provider ______ (Hvordan virker provider helt præcist?)
+	 * @param provider couples the View with the Contribution class
 	 */
 	private Box createForceSlider (final JSlider slider, int min, int max,
 			final ContributionProvider<URGripperProgramNodeContribution> provider) { //Currently using Duration Slider provider
@@ -261,7 +285,7 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 	 * Creates an area with two radiobuttons for opening and closing gripper and a label text for description
 	 * @param openRadioButton type JRadioButton, an instantiated button for opening gripper
 	 * @param closeRadioButton type JRadioButton, an instantiated button for closing gripper
-	 * @param provider ______ (Hvordan virker provider helt præcist?)
+	 * @param provider couples the View with the Contribution class
 	 */
 	private Box createOpenCloseRadioButton ( final JRadioButton openRadioButton, final JRadioButton closeRadioButton, 
 			final ContributionProvider<URGripperProgramNodeContribution> provider) {
@@ -299,58 +323,18 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		
 		return box;
 	}
-	
+
 	/**
-	 * Creates an area with a textfield to write IP in and a button to set the IP
-	 * @param ipTextField type JTextField, textfield for IP input
-	 * @param provider ______ (Hvordan virker provider helt præcist?)
+	 * Creates an area with text for description of other components
+	 * @param desc type String, the text you want displayed
 	 */
-	private Box createIPTextField (final JTextField ipTextField, final ContributionProvider<URGripperProgramNodeContribution> provider)	{
+	private Box createDescription(String desc) {
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
 		
-		final JButton sendButton = new JButton("Set IP");
+		JLabel label = new JLabel(desc);
 		
-		Action action = new AbstractAction() {
-			public void actionPerformed (ActionEvent e) {
-				provider.get().onIPSelection((String) ipTextField.getText());
-			}
-		};
-		
-		ipTextField.addActionListener(action);
-		sendButton.addActionListener(action);
-			
-		box.add(ipTextField);
-		box.add(sendButton);
-		box.setMaximumSize(new Dimension(500,20));
-		
-		return box;
-	
- 	}
-	
-	/**
-	 * Creates an area with a textfield to write port in and a button to set the port
-	 * @param portTextField type JTextField, textfield for IP input
-	 * @param provider ______ (Hvordan virker provider helt præcist?)
-	 */
-	private Box createPortTextField (final JTextField portTextField, final ContributionProvider<URGripperProgramNodeContribution> provider)	{
-		Box box = Box.createHorizontalBox();
-		box.setAlignmentX(Component.LEFT_ALIGNMENT);
-		
-		final JButton sendButton = new JButton("Set port");
-		
-		Action action = new AbstractAction() {
-			public void actionPerformed (ActionEvent e) {
-				provider.get().onPortSelection(Integer.parseInt(portTextField.getText()));
-			}
-		};
-		
-		portTextField.addActionListener(action);
-		sendButton.addActionListener(action);
-				
-		box.add(portTextField);
-		box.add(sendButton);
-		box.setMaximumSize(new Dimension(500,20));
+		box.add(label);
 		
 		return box;
 	}
@@ -362,95 +346,4 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 	private Component createSpacer(int height) {
 		return Box.createRigidArea(new Dimension(0, height));
 	}
-	
-//	private Box createIOComboBox(final JComboBox<Integer> combo,
-//	final ContributionProvider<URGripperProgramNodeContribution> provider) {
-//Box box = Box.createHorizontalBox();
-//box.setAlignmentX(Component.LEFT_ALIGNMENT);
-//
-//JLabel label = new JLabel(" digital_out ");
-//
-//combo.setPreferredSize(new Dimension(104, 30));
-//combo.setMaximumSize(combo.getPreferredSize());
-//
-//combo.addItemListener(new ItemListener() {
-//	
-//	@Override
-//	public void itemStateChanged(ItemEvent e) {
-//		if(e.getStateChange() == ItemEvent.SELECTED) {
-//			provider.get().onOutputSelection((Integer) e.getItem());
-//		}
-//	}
-//});
-//
-//box.add(label);
-//box.add(combo);
-//
-//return box;
-//}
-
-	
-//	private Box createDurationSlider(final JSlider slider, int min, int max,
-//	final ContributionProvider<URGripperProgramNodeContribution> provider) {
-//Box box = Box.createHorizontalBox();
-//box.setAlignmentX(Component.LEFT_ALIGNMENT);
-//
-//slider.setMinimum(min);
-//slider.setMaximum(max);
-//slider.setOrientation(JSlider.HORIZONTAL);
-//
-//slider.setPreferredSize(new Dimension(275, 30));
-//slider.setMaximumSize(slider.getPreferredSize());
-//
-//final JLabel value = new JLabel(Integer.toString(slider.getValue())+" s");
-//
-//slider.addChangeListener(new ChangeListener() {
-//	
-//	@Override
-//	public void stateChanged(ChangeEvent e) {
-//		int newValue = slider.getValue();
-//		value.setText(Integer.toString(newValue)+" s");
-//		provider.get().onDurationSelection(newValue);
-//	}
-//});
-//
-//box.add(slider);
-//box.add(value);
-//
-//return box;
-//}
-//	private JButton createCloseButton (final JButton button, final ContributionProvider<URGripperProgramNodeContribution> provider) {
-//	
-//	button.setPreferredSize(new Dimension(200, 100));
-//	button.setMaximumSize(button.getPreferredSize());
-//	
-//	Action action = new AbstractAction() {
-//		public void actionPerformed (ActionEvent e) {
-//			provider.get().onCloseSelection(false);
-//			button.getModel().setPressed(true);
-//		}
-//	};
-//	
-//	button.addActionListener(action);
-//	
-//	return button;
-//}
-//
-//private JButton createOpenButton (final JButton button, final ContributionProvider<URGripperProgramNodeContribution> provider) {
-//	
-//	button.setPreferredSize(new Dimension(200, 100));
-//	button.setMaximumSize(button.getPreferredSize());
-//	
-//	Action action = new AbstractAction() {
-//		public void actionPerformed (ActionEvent e) {
-//			provider.get().onCloseSelection(true);
-//			button.getModel().setPressed(true);
-//		}
-//	};
-//	
-//	button.addActionListener(action);
-//	
-//	return button;
-//}
-//
-}
+	}
