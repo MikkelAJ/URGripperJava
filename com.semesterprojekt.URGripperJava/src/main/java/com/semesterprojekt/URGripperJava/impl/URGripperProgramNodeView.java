@@ -1,9 +1,7 @@
 package com.semesterprojekt.URGripperJava.impl;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.ItemSelectable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -14,10 +12,8 @@ import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -101,8 +97,8 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 	}
 	
 	/**
-	 * Creates an area with a textfield to write IP in and a button to set the IP
-	 * @param ipTextField type JTextField, textfield for IP input
+	 * Creates an area with a text field to write IP in and a button to set the IP
+	 * @param ipTextField type JTextField, text field for IP input
 	 * @param provider couples the View with the Contribution class
 	 */
 	private Box createIPTextField (final JTextField ipTextField, final ContributionProvider<URGripperProgramNodeContribution> provider)	{
@@ -282,7 +278,7 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 	}
 
 	/**
-	 * Creates an area with two radiobuttons for opening and closing gripper and a label text for description
+	 * Creates an area with two radio buttons for opening and closing gripper and a label text for description
 	 * @param openRadioButton type JRadioButton, an instantiated button for opening gripper
 	 * @param closeRadioButton type JRadioButton, an instantiated button for closing gripper
 	 * @param provider couples the View with the Contribution class
