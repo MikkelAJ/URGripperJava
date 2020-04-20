@@ -179,9 +179,10 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 	
 	/**
 	 * Getter for current set direction of gripper movement
+	 * The function is default, to be used in view class
 	 * @return boolean, false to close, true to open.
 	 */
-	private boolean getGripStatus() {
+	boolean getGripStatus() {
 		return model.get(GRIPSTATUS_KEY, DEFAULT_GRIPSTATUS);
 	}
 	

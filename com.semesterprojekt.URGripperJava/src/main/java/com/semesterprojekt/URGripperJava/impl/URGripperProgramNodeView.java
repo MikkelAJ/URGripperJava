@@ -95,6 +95,15 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		openRadioButton.setSelected(b);
 		closeRadioButton.setSelected(!b);
 	}
+	 /**
+	  * Set function to enable or disable forceCheckBox
+	  * @param b boolean type, where true enables check box and false disables check box
+	  */
+	public void setForceCheckBoxEnable(Boolean b) {
+		forceCheckbox.setEnabled(b);
+		
+	}
+
 	
 	/**
 	 * Creates an area with a text field to write IP in and a button to set the IP
@@ -125,8 +134,8 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
  	}
 	
 	/**
-	 * Creates an area with a textfield to write port in and a button to set the port
-	 * @param portTextField type JTextField, textfield for IP input
+	 * Creates an area with a text field to write port in and a button to set the port
+	 * @param portTextField type JTextField, text field for IP input
 	 * @param provider couples the View with the Contribution class
 	 */
 	private Box createPortTextField (final JTextField portTextField, final ContributionProvider<URGripperProgramNodeContribution> provider)	{
@@ -152,7 +161,7 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 	}
 	
 	/**
-	 * Creates an area with a checkbox and a label text for the checkbox
+	 * Creates an area with a check box and a label text for the check box
 	 * @param forceBox type JCheckBox, an instantiated JChckBox
 	 * @param provider couples the View with the Contribution class
 	 */
@@ -162,14 +171,16 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		
 		final JLabel description = new JLabel("Close by force");
 		
+		
 		forceBox.addItemListener(new ItemListener() {
-			
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				provider.get().onForceSelection(e.getStateChange());
 				
-			}
-		});
+				@Override
+				public void itemStateChanged(ItemEvent e) {
+					provider.get().onForceSelection(e.getStateChange());
+					
+				}
+			});
+		
 		
 		box.add(forceBox);
 		box.add(description);
@@ -178,7 +189,7 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 	}
 
 	/**
-	 * Creates an area with a checkbox and a label text for the checkbox
+	 * Creates an area with a check box and a label text for the check box
 	 * @param distanceBox type JCheckBox, an instantiated JChckBox
 	 * @param provider couples the View with the Contribution class
 	 * */
@@ -301,6 +312,10 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 
 			public void actionPerformed(ActionEvent e) {
 				provider.get().onCloseSelection((boolean) openRadioButton.isSelected());
+				//setting enabled status of forceCheckBox object according to open/close status, as a gripper can't open by a given force
+				forceCheckbox.setEnabled(!openRadioButton.isSelected());
+				//setting forceCheckBox to false, if button is disabled, to update data in data model
+				forceCheckbox.setSelected(false);
 			}
 		});
 		
@@ -308,6 +323,8 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 
 			public void actionPerformed(ActionEvent e) {
 				provider.get().onCloseSelection((boolean) openRadioButton.isSelected());
+				//Re-enables forceCheckBox if close gripper is selected
+				forceCheckbox.setEnabled(closeRadioButton.isSelected());
 			}
 		});
 
