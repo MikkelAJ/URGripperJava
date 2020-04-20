@@ -247,6 +247,7 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 		view.setForceCheckBox(getForceSelect());
 		view.setDistanceCheckBox(getDistanceSelect());
 		view.setGripperStatus(getGripStatus());
+		view.setForceCheckBoxEnable(!getGripStatus());
 	}
 
 	@Override
