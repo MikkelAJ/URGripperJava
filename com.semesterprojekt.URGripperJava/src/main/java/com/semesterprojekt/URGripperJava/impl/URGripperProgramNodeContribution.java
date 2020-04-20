@@ -267,9 +267,17 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 	@Override
 	public void generateScript(ScriptWriter writer) {
 		//Remember this is actual code to be run at runtime of robot execution.
+		writer.appendLine("isOK = False");
 		writer.appendLine("socket_open(\"" + getIP() + "\", " + getPort() + ", \"socket_0\")");
 		writer.appendLine("socket_send_string(\"" + getSocketCommand() + "\", \"socket_0\")"); //"execute send" er den string der sendes;
-		writer.whileNot("socket_read_string(\"socket_0\") == \"OK\"");
+		writer.whileCondition("isOK == False");
+		writer.appendLine("recieveStr = socket_read_string(\"socket_0\")");
+		writer.ifCondition("recieveStr == \"HALT\"");
+			writer.appendLine("popup(\"Error in gripper, check gripper log!\",title=\"Gripper Fault\",error=True, blocking=True)");
+		//writer.end();
+			writer.elseIfCondition("recieveStr == \"OK\"");
+			writer.appendLine("isOK = True");
+			writer.end();
 		writer.end();
 		writer.appendLine("socket_close(\"socket_0\")");
 	}
