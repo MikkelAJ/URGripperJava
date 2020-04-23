@@ -270,18 +270,32 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 	public void generateScript(ScriptWriter writer) {
 		//Remember this is actual code to be run at runtime of robot execution.
 		writer.appendLine("isOK = False");
+		
+		//open socket and send command-string
 		writer.appendLine("socket_open(\"" + getIP() + "\", " + getPort() + ", \"socket_0\")");
-		writer.appendLine("socket_send_string(\"" + getSocketCommand() + "\", \"socket_0\")"); //"execute send" er den string der sendes;
+		writer.appendLine("socket_send_string(\"" + getSocketCommand() + "\", \"socket_0\")"); //"execute send" er den string der sendes
+		writer.ifCondition("socket_read_string(\"socket_0\") == \"OK\"");
+		writer.appendLine("socket_close(\"socket_0\")");
+		writer.elseCondition();
+		writer.appendLine("popup(\"WARNING! No acknowledgement recieved from gripper\",title=\"Gripper communication warning\",warning=True, blocking=True)");
+		writer.end();
+		
+		//status command listen
 		writer.whileCondition("isOK == False");
+		writer.appendLine("socket_open(\"" + getIP() + "\", " + getPort() + ", \"socket_0\")");
+		writer.appendLine("socket_send_string(\"status\", \"socket_0\")");
+		
 		writer.appendLine("recieveStr = socket_read_string(\"socket_0\")");
-		writer.ifCondition("recieveStr == \"HALT\"");
+		writer.appendLine("socket_close(\"socket_0\")");
+			writer.ifCondition("recieveStr == \"HALT\"");
 			writer.appendLine("popup(\"Error in gripper, check gripper log!\",title=\"Gripper Fault\",error=True, blocking=True)");
-		//writer.end();
 			writer.elseIfCondition("recieveStr == \"OK\"");
 			writer.appendLine("isOK = True");
+			writer.elseIfCondition("recieveStr == \"WAIT\"");
+			writer.sleep(0.1);
 			writer.end();
 		writer.end();
-		writer.appendLine("socket_close(\"socket_0\")");
+		
 	}
 
 }
