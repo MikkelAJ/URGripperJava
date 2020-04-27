@@ -297,7 +297,7 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 		//status command listen
 		writer.whileCondition("isOK == False");
 		writer.appendLine("socket_open(\"" + getIP() + "\", " + getPort() + ", \"socket_0\")");
-		writer.appendLine("socket_send_string(\"status\", \"socket_0\")");
+		writer.appendLine("socket_send_string(\"status;\", \"socket_0\")");
 		
 		writer.appendLine("recieveStr = socket_read_string(\"socket_0\")");
 		writer.appendLine("socket_close(\"socket_0\")");
