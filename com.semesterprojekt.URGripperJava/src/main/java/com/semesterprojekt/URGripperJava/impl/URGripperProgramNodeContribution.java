@@ -22,10 +22,10 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 	private static final String DISTANCE_VAL_KEY = "distanceVal";
 	private static final String FORCE_VAL_KEY = "forceVal";
 	
-	//URCAPS Default values.
 	
-	private static String DEFAULT_IP = "192.168.3.31";
-	private static int DEFAULT_PORT = 12345;
+	//URCAPS Default values.
+	private static final String DEFAULT_IP = "192.168.3.31";
+	private static final String DEFAULT_PORT = "12345";
 	//Gripper status boolean open/close
 	private static final boolean DEFAULT_GRIPSTATUS = false;
 	//selector for closing by force or distance 
@@ -65,17 +65,37 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 		});
 	}
 	
+	public void onDefaultIPSelection(final String ip) {
+		undoRedoManager.recordChanges(new UndoableChanges() {
+			
+			@Override
+			public void executeChanges() {
+				model.set(DEFAULT_IP, ip);	
+			}
+		});
+	}
+	
 	/**
 	 * Setting the port, entered by user in view, upon "set port" is pressed in view
 	 * if none is set before runtime, default values will be set.
 	 * @param port The port of the target TCP server
 	 */
-	public void onPortSelection(final int port) {
+	public void onPortSelection(final String port) {
 		undoRedoManager.recordChanges(new UndoableChanges() {
 			
 			@Override
 			public void executeChanges() {
 				model.set(PORT_KEY, port);
+			}
+		});
+	}
+	
+	public void onDefaultPortSelection(final String port) {
+		undoRedoManager.recordChanges(new UndoableChanges() {
+			
+			@Override
+			public void executeChanges() {
+				model.set(DEFAULT_PORT, port);
 			}
 		});
 	}
@@ -168,15 +188,14 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 	private String getIP() {
 		return model.get(IP_KEY, DEFAULT_IP);
 	}
-	
 	/**
 	 * Getter for port to the TCP server.
 	 * @return Returning prot number as int
 	 */
-	private int getPort() {
+	private String getPort() {
 		return model.get(PORT_KEY, DEFAULT_PORT);
 	}
-	
+
 	/**
 	 * Getter for current set direction of gripper movement
 	 * The function is default, to be used in view class
@@ -202,9 +221,6 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 	private boolean getDistanceSelect() {
 		return model.get(DISTANCE_SELECT_KEY, DEFAULT_SELECT_DISTANCE);
 	}
-	
-	
-	
 	
 	/**
 	 * Function to concat commandstring for TCP socket, returns string
@@ -237,9 +253,7 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 	}
 	
 	@Override
-	public void openView() {
-//		view.setIOComboBoxItems(getOutputItems());
-		
+	public void openView() {		
 		view.setIPTextField(getIP());
 		view.setPortTextField(getPort());
 		view.setDistanceSlider(getDistanceValue());
