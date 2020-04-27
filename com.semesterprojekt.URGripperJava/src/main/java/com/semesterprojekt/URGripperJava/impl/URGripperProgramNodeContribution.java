@@ -190,7 +190,7 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 	}
 	/**
 	 * Getter for port to the TCP server.
-	 * @return Returning prot number as int
+	 * @return Returning port number as int
 	 */
 	private String getPort() {
 		return model.get(PORT_KEY, DEFAULT_PORT);
