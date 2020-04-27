@@ -119,7 +119,11 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
 
 		final JButton sendButton = new JButton("Set IP");
-		final JButton defaultButton = new JButton("Set as default");
+		final JButton defaultButton = new JButton("Set default");
+		
+		sendButton.setPreferredSize(new Dimension(100,20));
+		defaultButton.setPreferredSize(new Dimension(125,20));
+		
 
 		sendButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -156,7 +160,10 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
 
 		final JButton sendButton = new JButton("Set port");
-		final JButton defaultButton = new JButton("Set as default");
+		final JButton defaultButton = new JButton("Set default");
+		
+		sendButton.setPreferredSize(new Dimension(100,20));
+		defaultButton.setPreferredSize(new Dimension(125,20));	
 		
 		sendButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
