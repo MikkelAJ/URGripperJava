@@ -7,8 +7,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -357,8 +355,7 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 				// model
 				forceCheckbox.setSelected(false);
 				forceSlider.setEnabled(!openRadioButton.isSelected());
-				provider.get().onForceTemp();//setting force temp key to current force
-				forceSlider.setValue(forceSlider.getMaximum());
+				//forceSlider.setValue(forceSlider.getMaximum());
 			}
 		});
 
@@ -369,7 +366,6 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 				// Re-enables forceCheckBox if close gripper is selected
 				forceCheckbox.setEnabled(closeRadioButton.isSelected());
 				forceSlider.setEnabled(closeRadioButton.isSelected());
-				provider.get().onResetForceSlider(); //Resetting force slider from force temp key
 			}
 		});
 
