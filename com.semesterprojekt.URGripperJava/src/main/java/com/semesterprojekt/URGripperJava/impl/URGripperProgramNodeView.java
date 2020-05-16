@@ -40,6 +40,8 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 	private JCheckBox DistanceCheckbox = new JCheckBox();
 	private JRadioButton openRadioButton = new JRadioButton();
 	private JRadioButton closeRadioButton = new JRadioButton();
+	private String IP_def = "192.168.1.100";
+	private String port_def = "12345";
 
 	@Override
 	public void buildUI(JPanel panel, ContributionProvider<URGripperProgramNodeContribution> provider) {
@@ -104,6 +106,14 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		forceCheckbox.setEnabled(b);
 
 	}
+	
+	public String getIPDef() {
+		return IP_def;
+	}
+	
+	public String getPortDef() {
+		return port_def;
+	}
 
 	/**
 	 * Creates an area with a text field to write IP in and a button to set the IP
@@ -131,7 +141,7 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		
 		defaultButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				provider.get().onDefaultIPSelection((String) ipTextField.getText());
+				IP_def = ipTextField.getText();
 				provider.get().onIPSelection((String) ipTextField.getText());
 			}
 		});
@@ -172,7 +182,7 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 		defaultButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				provider.get().onPortSelection((String) portTextField.getText());
-				provider.get().onDefaultPortSelection((String) portTextField.getText());
+				port_def = portTextField.getText();
 			}
 		});
 
@@ -353,7 +363,7 @@ public class URGripperProgramNodeView implements SwingProgramNodeView<URGripperP
 				forceCheckbox.setEnabled(!openRadioButton.isSelected());
 				// setting forceCheckBox to false, if button is disabled, to update data in data
 				// model
-				forceCheckbox.setSelected(false);
+//				forceCheckbox.setSelected(false);
 				forceSlider.setEnabled(!openRadioButton.isSelected());
 				//forceSlider.setValue(forceSlider.getMaximum());
 			}

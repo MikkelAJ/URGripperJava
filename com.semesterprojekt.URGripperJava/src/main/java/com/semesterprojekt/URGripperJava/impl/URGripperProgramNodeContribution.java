@@ -24,8 +24,8 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 	
 	
 	//URCAPS Default values.
-	private static final String DEFAULT_IP = "192.168.3.31";
-	private static final String DEFAULT_PORT = "12345";
+	private static String DEFAULT_IP;
+	private static String DEFAULT_PORT;
 	//Gripper status boolean open/close
 	private static final boolean DEFAULT_GRIPSTATUS = false;
 	//selector for closing by force or distance 
@@ -48,6 +48,8 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 		this.view = view;
 		this.model = model;
 		this.undoRedoManager = this.apiProvider.getProgramAPI().getUndoRedoManager();
+		DEFAULT_IP = view.getIPDef();
+		DEFAULT_PORT = view.getPortDef(); 
 	}
 	
 	/**
@@ -246,6 +248,8 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 		//getting values from sliders, recalculate to value between 0 and 255
 		cmd = cmd.concat(getForceValue() + ";");
 		cmd = cmd.concat(getDistanceValue() + ";");
+		
+		cmd = cmd.concat("\\r\\n");
 
 		
 		
@@ -253,7 +257,10 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 	}
 	
 	@Override
-	public void openView() {		
+	public void openView() {	
+		
+		DEFAULT_IP = view.getIPDef();
+		DEFAULT_PORT = view.getPortDef();
 		view.setIPTextField(getIP());
 		view.setPortTextField(getPort());
 		view.setDistanceSlider(getDistanceValue());
@@ -262,6 +269,7 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 		view.setDistanceCheckBox(getDistanceSelect());
 		view.setGripperStatus(getGripStatus());
 		view.setForceCheckBoxEnable(!getGripStatus());
+		
 	}
 
 	@Override
@@ -287,20 +295,22 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 		
 		//open socket and send command-string
 		writer.appendLine("socket_open(\"" + getIP() + "\", " + getPort() + ", \"socket_0\")");
-		writer.appendLine("socket_send_string(\"" + getSocketCommand() + "\", \"socket_0\")"); //"execute send" er den string der sendes
-		writer.ifCondition("socket_read_string(\"socket_0\") == \"OK\"");
+		writer.appendLine("socket_send_string(\"" + getSocketCommand() + "\", \"socket_0\")");
+//		writer.ifCondition("socket_read_string(\"socket_0\") == \"WAIT\"");
 		writer.appendLine("socket_close(\"socket_0\")");
-		writer.elseCondition();
-		writer.appendLine("popup(\"WARNING! No acknowledgement recieved from gripper\",title=\"Gripper communication warning\",warning=True, blocking=True)");
-		writer.end();
+//		writer.elseCondition();
+//		writer.appendLine("popup(\"WARNING! No acknowledgement received from gripper\",title=\"Gripper communication warning\",warning=True, blocking=True)");
+//		writer.end();
 		
 		//status command listen
-		writer.whileCondition("isOK == False");
+		writer.whileCondition("isOK == False"); //continue program until gripper confirms OK status
 		writer.appendLine("socket_open(\"" + getIP() + "\", " + getPort() + ", \"socket_0\")");
 		writer.appendLine("socket_send_string(\"ST;\", \"socket_0\")");
 		
+		//listening for reply on socket_0
 		writer.appendLine("recieveStr = socket_read_string(\"socket_0\")");
-		writer.appendLine("socket_close(\"socket_0\")");
+		writer.appendLine("socket_close(\"socket_0\")"); //closing socket_0 after received string
+			//If branching comparing the received string to 3 predefined commands
 			writer.ifCondition("recieveStr == \"HALT\"");
 			writer.appendLine("popup(\"Error in gripper, check gripper log!\",title=\"Gripper Fault\",error=True, blocking=True)");
 			writer.elseIfCondition("recieveStr == \"OK\"");
