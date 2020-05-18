@@ -245,11 +245,9 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 		cmd = cmd.concat(force + ";");
 		cmd = cmd.concat(distance + ";");
 		
-		//getting values from sliders, recalculate to value between 0 and 255
+		//getting values from sliders
 		cmd = cmd.concat(getForceValue() + ";");
 		cmd = cmd.concat(getDistanceValue() + ";");
-		
-		cmd = cmd.concat("\\r\\n");
 
 		
 		
@@ -291,32 +289,42 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 	@Override
 	public void generateScript(ScriptWriter writer) {
 		//Remember this is actual code to be run at runtime of robot execution.
-		writer.appendLine("isOK = False");
+		writer.appendLine("count=0"); //no connection counter
+		//writer.assign("recieveStr", "WAIT");
 		
 		//open socket and send command-string
 		writer.appendLine("socket_open(\"" + getIP() + "\", " + getPort() + ", \"socket_0\")");
 		writer.appendLine("socket_send_string(\"" + getSocketCommand() + "\", \"socket_0\")");
-//		writer.ifCondition("socket_read_string(\"socket_0\") == \"WAIT\"");
+		writer.appendLine("recieveStr = socket_read_string(\"socket_0\")");
+		writer.appendLine("textmsg(\"RecieveString init =\", recieveStr)");
 		writer.appendLine("socket_close(\"socket_0\")");
-//		writer.elseCondition();
-//		writer.appendLine("popup(\"WARNING! No acknowledgement received from gripper\",title=\"Gripper communication warning\",warning=True, blocking=True)");
-//		writer.end();
+		writer.sleep(0.5);
+		
+		
+//		writer.appendLine("recieveStr = \"change\"");
+//		writer.appendLine("textmsg(\"RecieveString change =\", recieveStr)");
+
 		
 		//status command listen
-		writer.whileCondition("isOK == False"); //continue program until gripper confirms OK status
+		writer.whileCondition("count < 10"); //continue program until gripper confirms OK status
 		writer.appendLine("socket_open(\"" + getIP() + "\", " + getPort() + ", \"socket_0\")");
 		writer.appendLine("socket_send_string(\"ST;\", \"socket_0\")");
 		
 		//listening for reply on socket_0
 		writer.appendLine("recieveStr = socket_read_string(\"socket_0\")");
+		writer.appendLine("textmsg(\"RecieveString=\", recieveStr)");
 		writer.appendLine("socket_close(\"socket_0\")"); //closing socket_0 after received string
 			//If branching comparing the received string to 3 predefined commands
 			writer.ifCondition("recieveStr == \"HALT\"");
 			writer.appendLine("popup(\"Error in gripper, check gripper log!\",title=\"Gripper Fault\",error=True, blocking=True)");
 			writer.elseIfCondition("recieveStr == \"OK\"");
-			writer.appendLine("isOK = True");
+			writer.appendLine("break");
 			writer.elseIfCondition("recieveStr == \"WAIT\"");
-			writer.sleep(0.1);
+			writer.appendLine("textmsg(\"WAIT\"	)");
+			writer.sleep(0.5);
+//			writer.elseCondition();
+//			writer.appendLine("count = count + 1");
+//			writer.sleep(0.5);
 			writer.end();
 		writer.end();
 		
