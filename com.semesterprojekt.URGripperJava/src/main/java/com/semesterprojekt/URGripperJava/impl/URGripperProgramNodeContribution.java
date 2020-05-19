@@ -306,7 +306,7 @@ public class URGripperProgramNodeContribution implements ProgramNodeContribution
 
 		
 		//status command listen
-		writer.whileCondition("count < 10"); //continue program until gripper confirms OK status
+		writer.whileCondition("True"); //continue program until gripper confirms OK status
 		writer.appendLine("socket_open(\"" + getIP() + "\", " + getPort() + ", \"socket_0\")");
 		writer.appendLine("socket_send_string(\"ST;\", \"socket_0\")");
 		
