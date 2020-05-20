@@ -14,7 +14,7 @@ public class URGripperProgramNodeService
 
 	@Override
 	public String getId() {
-		return "GripTest1Node";
+		return "URGripperNode";
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class URGripperProgramNodeService
 
 	public String getTitle(Locale locale) {
 
-		return "GripTest1";
+		return "URGripper";
 
 	}
 
